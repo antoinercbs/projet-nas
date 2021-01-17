@@ -23,7 +23,7 @@ import yaml
 def connect_to_host(global_conf):
     tn = telnetlib.Telnet(global_conf["host"])
     tn.read_until(b"Username: ")
-    user = global_conf["user"]
+    user = global_conf["username"]
     password = global_conf["password"]
     tn.write(user.encode('ascii') + b"\n")
     tn.read_until(b"Password: ")
