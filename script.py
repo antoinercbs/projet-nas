@@ -51,16 +51,14 @@ def configure_interface(tn, interface_conf):
 
 if __name__ == "__main__":
     with open('config.yaml') as cf:
-        conf = yaml.full_load(cf)
-
-        tn = connect_to_host(conf["global"])
-
-        for int_conf in conf["interfaces"]:
-            configure_interface(tn, int_conf)
-
-        tn.write(b"exit\n")
-
-        print(tn.read_all().decode('ascii'))
+        conf_file = yaml.full_load(cf)
+        for conf in conf_file["routers"]:
+            print("Configuration of", conf["global"]["hostname"])
+            tn = connect_to_host(conf["global"])
+            for int_conf in conf["interfaces"]:
+                configure_interface(tn, int_conf)
+            tn.write(b"exit\n")
+            print(tn.read_all().decode('ascii'))
 
 
 
