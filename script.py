@@ -37,6 +37,7 @@ if __name__ == "__main__":
     with open('config.yaml') as cf:
         conf = yaml.full_load(cf)
         tn = connect_to_host(conf["global"])
+        tn.write(b"exit\n")
         print(tn.read_all().decode('ascii'))
 
 
@@ -47,7 +48,7 @@ tn.write(b"conf t\n")
 tn.write(b"int loop 0\n")
 tn.write(b"ip address 1.1.1.1 255.255.255.255\n")
 tn.write(b"end\n")
-tn.write(b"exit\n")"""
+"""
 
 
 
