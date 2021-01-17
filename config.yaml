@@ -1,4 +1,14 @@
 global:
-  host : "192.168.122.134"
-  username : "antoine"
-  password : "cisco"
+  host: "192.168.122.134"
+  username: "antoine"
+  password: "cisco"
+  enable-password: "cisco"
+
+interfaces:
+  - name: "g1/0"
+    address: "dhcp"
+    no-shutdown: true
+  - name: "g2/0"
+    address: "192.168.120.5"
+    mask: "255.255.255.0"
+    no-shutdown: true
