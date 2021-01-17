@@ -28,6 +28,8 @@ def connect_to_host(global_conf):
     tn.write(user.encode('ascii') + b"\n")
     tn.read_until(b"Password: ")
     tn.write(password.encode('ascii') + b"\n")
+    
+    return tn
 
 
 
