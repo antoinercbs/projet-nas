@@ -48,15 +48,66 @@ def configure_interface(tn, interface_conf):
         tn.write(b"no shutdown\n")
     tn.write(b"end\n")
 
+def configure_loopback(tn, interface_conf):
+    tn.write(b"conf t\n")
+    number = str(interface_conf["number"])
+    tn.write(b"int loopback " + number.encode('ascii') + b"\n")
+    address = interface_conf["address"]
+    mask = interface_conf["mask"]
+    tn.write(b"ip address " + address.encode('ascii') + b" " + mask.encode('ascii') + b"\n")
+    tn.write(b"end\n")
+
+def remove_loopback(tn, num):
+    tn.write(b"conf t\n")
+    number = str(num)
+    tn.write(b"no int loopback " + number.encode('ascii') + b"\n")
+    tn.write(b"end\n")
+
+
+def configure_dhcp(tn, conf):
+    tn.write(b"conf t\n")
+    max_add = conf["excluded-address-max"]
+    min_add = conf["excluded-address-min"]
+    pool_name = conf["pool-name"]
+    subnet = conf["subnet"]
+    mask = conf["subnet-mask"]
+    def_router = conf["default-router"]
+    dns_serv = conf["dns-server"]
+
+    tn.write(b"ip dhcp excluded-address " + min_add.encode('ascii') + b" " + max_add.encode('ascii') + b"\n")
+    tn.write(b"ip dhcp pool " + pool_name.encode('ascii') + b"\n")
+    tn.write(b"network " + subnet.encode('ascii') + b" " + mask.encode('ascii') + b"\n")
+    tn.write(b"default-router " + def_router.encode('ascii') + b"\n")
+    tn.write(b"dns-server " + dns_serv.encode('ascii') + b"\n")
+    tn.write(b"end\n")
+
+
+
+
 
 if __name__ == "__main__":
     with open('config.yaml') as cf:
         conf_file = yaml.full_load(cf)
+
         for conf in conf_file["routers"]:
             print("Configuration of", conf["global"]["hostname"])
             tn = connect_to_host(conf["global"])
+            
+            if ("loopbacks" in conf.keys()):
+                defined = [False for i in range(0, 10)]
+                for loopback_conf in conf["loopbacks"]:
+                    defined[loopback_conf["number"]] = True
+                    configure_loopback(tn, loopback_conf)
+                for i in range(len(defined)):
+                    if not defined[i]:
+                        remove_loopback(tn, i)
+
             for int_conf in conf["interfaces"]:
                 configure_interface(tn, int_conf)
+
+            if ("dhcp" in conf.keys()):
+                configure_dhcp(tn, conf["dhcp"])
+
             tn.write(b"exit\n")
             print(tn.read_all().decode('ascii'))
 
