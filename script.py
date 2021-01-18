@@ -14,6 +14,7 @@
 # no shut
 # end 
 # sh ip int brief
+# copy running-config startup-config
 
 
 import getpass
@@ -34,6 +35,16 @@ def connect_to_host(global_conf):
     tn.write(enable_password.encode('ascii') + b"\n")
     
     return tn
+
+def configure_ospf(tn, conf):
+    tn.write(b"conf t\n")
+    num = conf["process-number"]
+    tn.write(b"no router ospf " + num.encode('ascii') + b"\n")
+    tn.write(b"router ospf " + num.encode('ascii') + b"\n")
+    for net in conf["networks"]:
+        tn.write(b"network " + net["subnet"].encode('ascii') + b" " + net["mask"].encode('ascii') + b" area " + net["area"].encode('ascii') + b"\n")
+    tn.write(b"end\n")
+
 
 def configure_interface(tn, interface_conf):
     tn.write(b"conf t\n")
@@ -94,19 +105,18 @@ if __name__ == "__main__":
             tn = connect_to_host(conf["global"])
             
             if ("loopbacks" in conf.keys()):
-                defined = [False for i in range(0, 10)]
                 for loopback_conf in conf["loopbacks"]:
-                    defined[loopback_conf["number"]] = True
                     configure_loopback(tn, loopback_conf)
-                for i in range(len(defined)):
-                    if not defined[i]:
-                        remove_loopback(tn, i)
 
-            for int_conf in conf["interfaces"]:
-                configure_interface(tn, int_conf)
+            if ("interfaces" in conf.keys()):
+                for int_conf in conf["interfaces"]:
+                    configure_interface(tn, int_conf)
 
             if ("dhcp" in conf.keys()):
                 configure_dhcp(tn, conf["dhcp"])
+
+            if ("ospf" in conf.keys()):
+                configure_ospf(tn, conf["ospf"])
 
             tn.write(b"exit\n")
             print(tn.read_all().decode('ascii'))
