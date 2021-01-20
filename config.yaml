@@ -1,50 +1,5 @@
 routers :
 
-# ------------- R1 ------------- #
-
-  - global:
-      hostname: "R1"
-      host: "192.168.122.11"
-      username: "antoine"
-      password: "cisco"
-      enable-password: "cisco"
-
-    loopbacks:
-      - number: 0
-        address: "10.10.1.1"
-        mask: "255.255.255.255"
-
-    interfaces:
-      - name: "g1/0"
-        address: "192.168.1.1"
-        mask: "255.255.255.0"
-        no-shutdown: true
-      - name: "g2/0"
-        address: "10.10.13.1"
-        mask: "255.255.255.0"
-        no-shutdown: true
-
-    dhcp: 
-      excluded-address-min: "192.168.1.1"
-      excluded-address-max: "192.168.1.50"
-      pool-name: "ApertureDHCP"
-      subnet: "192.168.1.0"
-      subnet-mask: "255.255.255.0"
-      default-router: "192.168.1.1"
-      dns-server: "192.168.1.1"
-
-    ospf:
-        process-number: "10"
-        networks:
-          - subnet: "10.0.0.0"
-            mask: "0.255.255.255"
-            area: "0"
-          - subnet: "192.168.1.0"
-            mask: "0.0.0.255"
-            area: "0"
-          
-
-
 # ------------- R2 ------------- #
 
   - global:
@@ -54,39 +9,28 @@ routers :
       password: "cisco"
       enable-password: "cisco"
 
-    loopbacks:
-      - number: 0
-        address: "10.10.2.2"
-        mask: "255.255.255.255"
-    
+
     interfaces:
       - name: "g1/0"
-        address: "192.168.0.1"
-        mask: "255.255.255.0"
-        no-shutdown: true
-      - name: "g4/0"
-        address: "10.10.23.2"
+        address: "20.21.0.1"
         mask: "255.255.255.0"
         no-shutdown: true
 
-    dhcp: 
-      excluded-address-min: "192.168.0.1"
-      excluded-address-max: "192.168.0.50"
-      pool-name: "ApertureOfficesDHCP"
-      subnet: "192.168.0.0"
-      subnet-mask: "255.255.255.0"
-      default-router: "192.168.0.1"
-      dns-server: "192.168.0.1"
+      - name: "g2/0"
+        address: "194.20.21.2"
+        mask: "255.255.255.0"
+        no-shutdown: true
 
     ospf:
-      process-number: "10"
+      process-number: "1"
       networks:
-        - subnet: "10.0.0.0"
-          mask: "0.255.255.255"
-          area: "0"
-        - subnet: "192.168.0.0"
+        - subnet: "194.20.21.0"
           mask: "0.0.0.255"
           area: "0"
+        - subnet: "20.21.0.0"
+          mask: "0.0.255.255"
+          area: "0"  
+
 
 # ------------- R3 ------------- #
 
@@ -97,27 +41,119 @@ routers :
       password: "cisco"
       enable-password: "cisco"
 
-    loopbacks:
-      - number: 0
-        address: "10.10.3.3"
-        mask: "255.255.255.255"
-
     interfaces:
       - name: "g1/0"
-        address: "10.10.23.3"
+        address: "20.21.1.1"
         mask: "255.255.255.0"
         no-shutdown: true
+
       - name: "g2/0"
-        address: "10.10.13.3"
+        address: "194.20.22.2"
         mask: "255.255.255.0"
         no-shutdown: true
 
     ospf:
-      process-number: "10"
+      process-number: "1"
       networks:
-        - subnet: "10.0.0.0"
+        - subnet: "194.20.22.0"
+          mask: "0.0.0.255"
+          area: "0"
+        - subnet: "20.21.0.0"
+          mask: "0.0.255.255"
+          area: "0"  
+
+# ------------- R5 ------------- #
+
+  - global:
+      hostname: "R5"
+      host: "192.168.122.15"
+      username: "antoine"
+      password: "cisco"
+      enable-password: "cisco"
+
+    loopbacks:
+      - number: 0
+        address: "10.168.10.5"
+        mask: "255.255.255.255"
+
+    interfaces:
+      - name: "g3/0"
+        address: "172.26.57.1"
+        mask: "255.255.255.0"
+        no-shutdown: true
+
+    ospf:
+      process-number: "1"
+      networks:
+        - subnet: "172.0.0.0"
           mask: "0.255.255.255"
           area: "0"
+        - subnet: "10.168.0.0"
+          mask: "0.0.255.255"
+          area: "0"
+  
+# ------------- R6 ------------- #
 
+  - global:
+      hostname: "R6"
+      host: "192.168.122.16"
+      username: "antoine"
+      password: "cisco"
+      enable-password: "cisco"
+
+    loopbacks:
+      - number: 0
+        address: "10.168.10.6"
+        mask: "255.255.255.255"
+
+    interfaces:
+      - name: "g3/0"
+        address: "172.26.67.1"
+        mask: "255.255.255.0"
+        no-shutdown: true
+
+    ospf:
+      process-number: "1"
+      networks:
+        - subnet: "172.0.0.0"
+          mask: "0.255.255.255"
+          area: "0"
+        - subnet: "10.168.0.0"
+          mask: "0.0.255.255"
+          area: "0"
+
+# ------------- R7 ------------- #
+
+  - global:
+      hostname: "R7"
+      host: "192.168.122.17"
+      username: "antoine"
+      password: "cisco"
+      enable-password: "cisco"
+
+    loopbacks:
+      - number: 0
+        address: "10.168.10.7"
+        mask: "255.255.255.255"
+
+    interfaces:
+      - name: "g1/0"
+        address: "172.26.67.2"
+        mask: "255.255.255.0"
+        no-shutdown: true
+      - name: "g2/0"
+        address: "172.26.57.2"
+        mask: "255.255.255.0"
+        no-shutdown: true
+
+    ospf:
+      process-number: "1"
+      networks:
+        - subnet: "172.0.0.0"
+          mask: "0.255.255.255"
+          area: "0"
+        - subnet: "10.168.0.0"
+          mask: "0.0.255.255"
+          area: "0"
   
 

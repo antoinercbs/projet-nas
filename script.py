@@ -17,7 +17,6 @@
 # copy running-config startup-config
 
 
-import getpass
 import telnetlib
 import yaml
 
