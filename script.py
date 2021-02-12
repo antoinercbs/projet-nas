@@ -56,8 +56,7 @@ def configure_vrf(tn, conf):
     for vrf in conf:
         tn.write(b"conf t\n")
         name = vrf["name"].encode('ascii')
-        tn.write(b"no ip vrf " + name + b"\n")
-        time.sleep(10)
+        #tn.write(b"no ip vrf " + name + b"\n")
         tn.write(b"ip vrf " + name + b"\n")
         if ("rd" in vrf.keys()):
             as_number = vrf["as-number"].encode('ascii')

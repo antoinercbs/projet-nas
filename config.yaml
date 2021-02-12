@@ -9,6 +9,15 @@ routers :
       password: "cisco"
       enable-password: "cisco"
 
+    dhcp: 
+      excluded-address-min: "172.16.1.1"
+      excluded-address-max: "172.16.1.50"
+      pool-name: "KelebulcDHCP"
+      subnet: "172.16.1.0"
+      subnet-mask: "255.255.255.0"
+      default-router: "172.16.1.254"
+      dns-server: "172.16.1.254"
+
 
     interfaces:
       - name: "g1/0"
@@ -19,6 +28,25 @@ routers :
         address: "11.11.16.1"
         mask: "255.255.255.0"
         no-shutdown: true
+
+    bgp:
+      as-number: "64101"
+      neighbors:
+        - address: "11.11.16.6"
+          remote-as: "64100"
+      networks:
+        - address: "172.16.1.0"
+          mask: "255.255.255.0"
+
+    ospf:
+      - process-number: "1"
+        networks:
+          - subnet: "172.16.1.0"
+            mask: "0.0.0.255"
+            area: "0"
+          - subnet: "11.11.0.0"
+            mask: "0.0.255.255"
+            area: "0"
 
 # ------------- R2 ------------- #
 
@@ -124,6 +152,15 @@ routers :
       password: "cisco"
       enable-password: "cisco"
 
+    dhcp: 
+      excluded-address-min: "172.16.2.1"
+      excluded-address-max: "172.16.2.50"
+      pool-name: "Kelebulc"
+      subnet: "172.16.2.0"
+      subnet-mask: "255.255.255.0"
+      default-router: "172.16.2.254"
+      dns-server: "172.16.2.254"
+
     interfaces:
       - name: "g1/0"
         address: "172.16.2.254"
@@ -133,6 +170,25 @@ routers :
         address: "11.11.45.4"
         mask: "255.255.255.0"
         no-shutdown: true
+
+    bgp:
+      as-number: "64104"
+      neighbors:
+        - address: "11.11.45.5"
+          remote-as: "64100"
+      networks:
+        - address: "172.16.2.0"
+          mask: "255.255.255.0"
+
+    ospf:
+      - process-number: "1"
+        networks:
+          - subnet: "172.16.2.0"
+            mask: "0.0.0.255"
+            area: "0"
+          - subnet: "11.11.0.0"
+            mask: "0.0.255.255"
+            area: "0"
 
 # ------------- R5 ------------- #
 
@@ -157,6 +213,7 @@ routers :
       - name: "g2/0"
         address: "11.11.45.5"
         mask: "255.255.255.0"
+        vrf-forwarding : "Kelebulc"
         no-shutdown: true
       - name: "g1/0"
         address: "11.11.35.5"
@@ -168,6 +225,9 @@ routers :
       - name: "Aperture"
         as-number : "64100"
         rd: "1"
+      - name: "Kelebulc"
+        as-number : "64100"
+        rd: "2"
 
     bgp:
       as-number: "64100"
@@ -185,6 +245,11 @@ routers :
           neighbors:
             - address: "11.11.35.3"
               remote-as: "64103"
+        - family: "ipv4"
+          vrf: "Kelebulc"
+          neighbors:
+            - address: "11.11.45.4"
+              remote-as: "64104"
 
     ospf:
       - process-number: "1"
@@ -197,6 +262,13 @@ routers :
             area: "0"
       - process-number: "2"
         vrf: "Aperture"
+        redistribute-bgp-subnets: "64100"
+        networks:
+          - subnet: "11.11.0.0"
+            mask: "0.0.255.255"
+            area: "0"
+      - process-number: "3"
+        vrf: "Kelebulc"
         redistribute-bgp-subnets: "64100"
         networks:
           - subnet: "11.11.0.0"
@@ -226,6 +298,7 @@ routers :
       - name: "g2/0"
         address: "11.11.16.6"
         mask: "255.255.255.0"
+        vrf-forwarding : "Kelebulc"
         no-shutdown: true
       - name: "g1/0"
         address: "11.11.26.6"
@@ -237,6 +310,9 @@ routers :
       - name: "Aperture"
         as-number : "64100"
         rd: "1"
+      - name: "Kelebulc"
+        as-number : "64100"
+        rd: "2"
 
     bgp:
       as-number: "64100"
@@ -254,6 +330,11 @@ routers :
           neighbors:
             - address: "11.11.26.2"
               remote-as: "64102"
+        - family: "ipv4"
+          vrf: "Kelebulc"
+          neighbors:
+            - address: "11.11.16.1"
+              remote-as: "64101"
 
     ospf:
       - process-number: "1"
@@ -266,6 +347,13 @@ routers :
             area: "0"
       - process-number: "2"
         vrf: "Aperture"
+        redistribute-bgp-subnets: "64100"
+        networks:
+          - subnet: "11.11.0.0"
+            mask: "0.0.255.255"
+            area: "0"
+      - process-number: "3"
+        vrf: "Kelebulc"
         redistribute-bgp-subnets: "64100"
         networks:
           - subnet: "11.11.0.0"
@@ -304,9 +392,6 @@ routers :
     ospf:
       - process-number: "1"
         networks:
-          - subnet: "10.10.0.0"
-            mask: "0.0.255.255"
-            area: "0"
           - subnet: "10.10.0.0"
             mask: "0.0.255.255"
             area: "0"
