@@ -1,5 +1,25 @@
 routers :
 
+# ------------- R1 ------------- #
+
+  - global:
+      hostname: "R1"
+      host: "192.168.122.11"
+      username: "antoine"
+      password: "cisco"
+      enable-password: "cisco"
+
+
+    interfaces:
+      - name: "g1/0"
+        address: "172.16.1.254"
+        mask: "255.255.255.0"
+        no-shutdown: true
+      - name: "g2/0"
+        address: "11.11.16.1"
+        mask: "255.255.255.0"
+        no-shutdown: true
+
 # ------------- R2 ------------- #
 
   - global:
@@ -12,25 +32,41 @@ routers :
 
     interfaces:
       - name: "g1/0"
-        address: "20.21.0.1"
+        address: "172.16.1.254"
+        mask: "255.255.255.0"
+        no-shutdown: true
+      - name: "g2/0"
+        address: "11.11.26.2"
         mask: "255.255.255.0"
         no-shutdown: true
 
-      - name: "g2/0"
-        address: "194.20.21.2"
-        mask: "255.255.255.0"
-        no-shutdown: true
+    dhcp: 
+      excluded-address-min: "172.16.1.1"
+      excluded-address-max: "172.16.1.50"
+      pool-name: "ApertureDHCP"
+      subnet: "172.16.1.0"
+      subnet-mask: "255.255.255.0"
+      default-router: "172.16.1.254"
+      dns-server: "172.16.1.254"
+
+    bgp:
+      as-number: "64102"
+      neighbors:
+        - address: "11.11.26.6"
+          remote-as: "64100"
+      networks:
+        - address: "172.16.1.0"
+          mask: "255.255.255.0"
 
     ospf:
-      process-number: "1"
-      networks:
-        - subnet: "194.20.21.0"
-          mask: "0.0.0.255"
-          area: "0"
-        - subnet: "20.21.0.0"
-          mask: "0.0.255.255"
-          area: "0"  
-
+      - process-number: "1"
+        networks:
+          - subnet: "172.16.1.0"
+            mask: "0.0.0.255"
+            area: "0"
+          - subnet: "11.11.0.0"
+            mask: "0.0.255.255"
+            area: "0"
 
 # ------------- R3 ------------- #
 
@@ -43,24 +79,60 @@ routers :
 
     interfaces:
       - name: "g1/0"
-        address: "20.21.1.1"
+        address: "172.16.2.254"
+        mask: "255.255.255.0"
+        no-shutdown: true
+      - name: "g2/0"
+        address: "11.11.35.3"
         mask: "255.255.255.0"
         no-shutdown: true
 
-      - name: "g2/0"
-        address: "194.20.22.2"
-        mask: "255.255.255.0"
-        no-shutdown: true
+    dhcp: 
+      excluded-address-min: "172.16.2.1"
+      excluded-address-max: "172.16.2.50"
+      pool-name: "ApertureDHCP"
+      subnet: "172.16.2.0"
+      subnet-mask: "255.255.255.0"
+      default-router: "172.16.2.254"
+      dns-server: "172.16.2.254"
+
+    bgp:
+      as-number: "64103"
+      neighbors:
+        - address: "11.11.35.5"
+          remote-as: "64100"
+      networks:
+        - address: "172.16.2.0"
+          mask: "255.255.255.0"
+
 
     ospf:
-      process-number: "1"
-      networks:
-        - subnet: "194.20.22.0"
-          mask: "0.0.0.255"
-          area: "0"
-        - subnet: "20.21.0.0"
-          mask: "0.0.255.255"
-          area: "0"  
+      - process-number: "1"
+        networks:
+          - subnet: "172.16.2.0"
+            mask: "0.0.0.255"
+            area: "0"
+          - subnet: "11.11.0.0"
+            mask: "0.0.255.255"
+            area: "0"
+# ------------- R4 ------------- #
+
+  - global:
+      hostname: "R4"
+      host: "192.168.122.14"
+      username: "antoine"
+      password: "cisco"
+      enable-password: "cisco"
+
+    interfaces:
+      - name: "g1/0"
+        address: "172.16.2.254"
+        mask: "255.255.255.0"
+        no-shutdown: true
+      - name: "g2/0"
+        address: "11.11.45.4"
+        mask: "255.255.255.0"
+        no-shutdown: true
 
 # ------------- R5 ------------- #
 
@@ -73,24 +145,63 @@ routers :
 
     loopbacks:
       - number: 0
-        address: "10.168.10.5"
+        address: "10.1.1.5"
         mask: "255.255.255.255"
 
     interfaces:
       - name: "g3/0"
-        address: "172.26.57.1"
+        address: "10.10.57.5"
+        mask: "255.255.255.0"
+        mpls-ip: true
+        no-shutdown: true
+      - name: "g2/0"
+        address: "11.11.45.5"
         mask: "255.255.255.0"
         no-shutdown: true
+      - name: "g1/0"
+        address: "11.11.35.5"
+        mask: "255.255.255.0"
+        vrf-forwarding : "Aperture"
+        no-shutdown: true
+
+    vrf:
+      - name: "Aperture"
+        as-number : "64100"
+        rd: "1"
+
+    bgp:
+      as-number: "64100"
+      neighbors:
+        - address: "10.1.1.6"
+          remote-as: "64100"
+          update-source: "lo0"
+      address-families:
+        - family: "vpnv4"
+          neighbors:
+            - address: "10.1.1.6"
+              activate: true
+        - family: "ipv4"
+          vrf: "Aperture"
+          neighbors:
+            - address: "11.11.35.3"
+              remote-as: "64103"
 
     ospf:
-      process-number: "1"
-      networks:
-        - subnet: "172.0.0.0"
-          mask: "0.255.255.255"
-          area: "0"
-        - subnet: "10.168.0.0"
-          mask: "0.0.255.255"
-          area: "0"
+      - process-number: "1"
+        networks:
+          - subnet: "10.10.0.0"
+            mask: "0.0.255.255"
+            area: "0"
+          - subnet: "10.1.1.5"
+            mask: "0.0.0.0"
+            area: "0"
+      - process-number: "2"
+        vrf: "Aperture"
+        redistribute-bgp-subnets: "64100"
+        networks:
+          - subnet: "11.11.0.0"
+            mask: "0.0.255.255"
+            area: "0"
   
 # ------------- R6 ------------- #
 
@@ -103,24 +214,63 @@ routers :
 
     loopbacks:
       - number: 0
-        address: "10.168.10.6"
+        address: "10.1.1.6"
         mask: "255.255.255.255"
 
     interfaces:
       - name: "g3/0"
-        address: "172.26.67.1"
+        address: "10.10.67.6"
+        mask: "255.255.255.0"
+        mpls-ip: true
+        no-shutdown: true
+      - name: "g2/0"
+        address: "11.11.16.6"
         mask: "255.255.255.0"
         no-shutdown: true
+      - name: "g1/0"
+        address: "11.11.26.6"
+        mask: "255.255.255.0"
+        vrf-forwarding : "Aperture"
+        no-shutdown: true
+
+    vrf:
+      - name: "Aperture"
+        as-number : "64100"
+        rd: "1"
+
+    bgp:
+      as-number: "64100"
+      neighbors:
+        - address: "10.1.1.5"
+          remote-as: "64100"
+          update-source: "lo0"
+      address-families:
+        - family: "vpnv4"
+          neighbors:
+            - address: "10.1.1.5"
+              activate: true
+        - family: "ipv4"
+          vrf: "Aperture"
+          neighbors:
+            - address: "11.11.26.2"
+              remote-as: "64102"
 
     ospf:
-      process-number: "1"
-      networks:
-        - subnet: "172.0.0.0"
-          mask: "0.255.255.255"
-          area: "0"
-        - subnet: "10.168.0.0"
-          mask: "0.0.255.255"
-          area: "0"
+      - process-number: "1"
+        networks:
+          - subnet: "10.10.0.0"
+            mask: "0.0.255.255"
+            area: "0"
+          - subnet: "10.1.1.6"
+            mask: "0.0.0.0"
+            area: "0"
+      - process-number: "2"
+        vrf: "Aperture"
+        redistribute-bgp-subnets: "64100"
+        networks:
+          - subnet: "11.11.0.0"
+            mask: "0.0.255.255"
+            area: "0"
 
 # ------------- R7 ------------- #
 
@@ -133,27 +283,35 @@ routers :
 
     loopbacks:
       - number: 0
-        address: "10.168.10.7"
+        address: "10.1.1.7"
         mask: "255.255.255.255"
 
     interfaces:
       - name: "g1/0"
-        address: "172.26.67.2"
+        address: "10.10.67.7"
         mask: "255.255.255.0"
+        mpls-ip: true
         no-shutdown: true
       - name: "g2/0"
-        address: "172.26.57.2"
+        address: "10.10.57.7"
         mask: "255.255.255.0"
+        mpls-ip: true
         no-shutdown: true
 
+    mpls:
+      router-id: "Loopback0"
+
     ospf:
-      process-number: "1"
-      networks:
-        - subnet: "172.0.0.0"
-          mask: "0.255.255.255"
-          area: "0"
-        - subnet: "10.168.0.0"
-          mask: "0.0.255.255"
-          area: "0"
+      - process-number: "1"
+        networks:
+          - subnet: "10.10.0.0"
+            mask: "0.0.255.255"
+            area: "0"
+          - subnet: "10.10.0.0"
+            mask: "0.0.255.255"
+            area: "0"
+          - subnet: "10.1.1.7"
+            mask: "0.0.0.0"
+            area: "0"
   
 
