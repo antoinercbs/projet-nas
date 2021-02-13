@@ -13,7 +13,7 @@ backbone-ospf:
       backbone-neighbors:
         - interface: "g3/0"
 
-ibgp:
+ibgp: #Part du principe qu'on utilise Lo0
   as-number: "64100"
   activate-vpn: true
   edge-routers:
@@ -27,9 +27,8 @@ vpn:
           name: "R2"
           as-number: "64102"
           interface-to-pe: "g2/0"
-          local-subnets:
-            - address: "172.16.1.0"
-              mask: "255.255.255.0"
+          interfaces-to-local:
+            - name: "g1/0"
         pe-router:
           name: "R6"
           interface-to-ce: "g1/0"
@@ -37,9 +36,8 @@ vpn:
           name: "R3"
           as-number: "64103"
           interface-to-pe: "g2/0"
-          local-subnets:
-            - address: "172.16.2.0"
-              mask: "255.255.255.0"
+          interfaces-to-local:
+            - name: "g1/0"
         pe-router:
           name: "R5"
           interface-to-ce: "g1/0"
@@ -50,9 +48,8 @@ vpn:
           name: "R1"
           as-number: "64101"
           interface-to-pe: "g2/0"
-          local-subnets:
-            - address: "172.16.1.0"
-              mask: "255.255.255.0"
+          interfaces-to-local:
+            - name: "g1/0"
         pe-router:
           name: "R6"
           interface-to-ce: "g2/0"
@@ -60,9 +57,8 @@ vpn:
           name: "R4"
           as-number: "64104"
           interface-to-pe: "g2/0"
-          local-subnets:
-            - address: "172.16.2.0"
-              mask: "255.255.255.0"
+          interfaces-to-local:
+            - name: "g1/0"
         pe-router:
           name: "R5"
           interface-to-ce: "g2/0"

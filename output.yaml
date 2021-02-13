@@ -1,5 +1,13 @@
 routers:
-- dhcp:
+- bgp:
+    as-number: '64101'
+    neighbors:
+    - address: 11.11.16.6
+      remote-as: '64100'
+    networks:
+    - address: 172.16.1.0
+      mask: 255.255.255.0
+  dhcp:
     default-router: 172.16.1.254
     dns-server: 172.16.1.254
     excluded-address-max: 172.16.1.50
@@ -22,7 +30,24 @@ routers:
     mask: 255.255.255.0
     name: g2/0
     no-shutdown: true
-- dhcp:
+  ospf:
+  - networks:
+    - address: 172.16.1.0
+      area: '0'
+      mask: 0.0.0.255
+    - address: 11.11.16.0
+      area: '0'
+      mask: 0.0.0.255
+    process-number: '1'
+- bgp:
+    as-number: '64102'
+    neighbors:
+    - address: 11.11.26.6
+      remote-as: '64100'
+    networks:
+    - address: 172.16.1.0
+      mask: 255.255.255.0
+  dhcp:
     default-router: 172.16.1.254
     dns-server: 172.16.1.254
     excluded-address-max: 172.16.1.50
@@ -45,7 +70,24 @@ routers:
     mask: 255.255.255.0
     name: g2/0
     no-shutdown: true
-- dhcp:
+  ospf:
+  - networks:
+    - address: 172.16.1.0
+      area: '0'
+      mask: 0.0.0.255
+    - address: 11.11.26.0
+      area: '0'
+      mask: 0.0.0.255
+    process-number: '1'
+- bgp:
+    as-number: '64103'
+    neighbors:
+    - address: 11.11.35.5
+      remote-as: '64100'
+    networks:
+    - address: 172.16.2.0
+      mask: 255.255.255.0
+  dhcp:
     default-router: 172.16.2.254
     dns-server: 172.16.2.254
     excluded-address-max: 172.16.2.50
@@ -68,7 +110,24 @@ routers:
     mask: 255.255.255.0
     name: g2/0
     no-shutdown: true
-- dhcp:
+  ospf:
+  - networks:
+    - address: 172.16.2.0
+      area: '0'
+      mask: 0.0.0.255
+    - address: 11.11.35.0
+      area: '0'
+      mask: 0.0.0.255
+    process-number: '1'
+- bgp:
+    as-number: '64104'
+    neighbors:
+    - address: 11.11.45.5
+      remote-as: '64100'
+    networks:
+    - address: 172.16.2.0
+      mask: 255.255.255.0
+  dhcp:
     default-router: 172.16.2.254
     dns-server: 172.16.2.254
     excluded-address-max: 172.16.2.50
@@ -91,6 +150,15 @@ routers:
     mask: 255.255.255.0
     name: g2/0
     no-shutdown: true
+  ospf:
+  - networks:
+    - address: 172.16.2.0
+      area: '0'
+      mask: 0.0.0.255
+    - address: 11.11.45.0
+      area: '0'
+      mask: 0.0.0.255
+    process-number: '1'
 - bgp:
     address-families:
     - family: vpnv4
@@ -135,6 +203,13 @@ routers:
       mask: 0.0.0.255
       subnet: 10.10.57.0
     process-number: '1'
+  vrf:
+  - as_number: '64100'
+    name: Aperture
+    rd: 1
+  - as_number: '64100'
+    name: Kelebulc
+    rd: 2
 - bgp:
     address-families:
     - family: vpnv4
@@ -178,6 +253,13 @@ routers:
       mask: 0.0.0.255
       subnet: 10.10.67.0
     process-number: '1'
+  vrf:
+  - as_number: '64100'
+    name: Aperture
+    rd: 1
+  - as_number: '64100'
+    name: Kelebulc
+    rd: 2
 - global:
     enable-password: cisco
     host: 192.168.122.17
