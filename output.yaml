@@ -165,6 +165,16 @@ routers:
       neighbors:
       - activate: true
         address: 10.1.1.6
+    - family: ipv4
+      neighbors:
+      - address: 11.11.35.3
+        remote-as: '64103'
+      vrf: Aperture
+    - family: ipv4
+      neighbors:
+      - address: 11.11.45.4
+        remote-as: '64104'
+      vrf: Kelebulc
     as-number: '64100'
     neighbors:
     - address: 10.1.1.6
@@ -216,6 +226,16 @@ routers:
       neighbors:
       - activate: true
         address: 10.1.1.5
+    - family: ipv4
+      neighbors:
+      - address: 11.11.26.2
+        remote-as: '64102'
+      vrf: Aperture
+    - family: ipv4
+      neighbors:
+      - address: 11.11.16.1
+        remote-as: '64101'
+      vrf: Kelebulc
     as-number: '64100'
     neighbors:
     - address: 10.1.1.5

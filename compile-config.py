@@ -145,6 +145,29 @@ def configure_ce_ospf(conf, network_conf):
                             ospf_conf["networks"].append(net_conf)
                     router["ospf"].append(ospf_conf)
 
+def configure_pe_bgp(conf, network_conf):
+    vpn_conf = network_conf["vpn"]
+    for router in conf["routers"]:
+        for vpn in vpn_conf:
+            for site in vpn["sites"]:
+                if router["global"]["hostname"] == site["pe-router"]["name"]:
+                    for ce_router in conf["routers"]:
+                        if ce_router["global"]["hostname"] == site["ce-router"]["name"]:
+                            af_conf= dict()
+                            af_conf["family"] = "ipv4"
+                            af_conf["vrf"] = vpn["vrf-name"]
+                            af_conf["neighbors"] = []
+                            for ce_inter_conf in ce_router["interfaces"]:
+                                if site["ce-router"]["interface-to-pe"] == ce_inter_conf["name"]:
+                                    net_conf = dict()
+                                    net_conf["address"] = ce_inter_conf["address"]
+                                    net_conf["remote-as"] = site["ce-router"]["as-number"]
+                                    af_conf["neighbors"].append(net_conf)
+                            router["bgp"]["address-families"].append(af_conf)
+
+
+
+
 
 
 
@@ -165,6 +188,7 @@ if __name__ == "__main__":
             configure_vrf(conf, network_conf)
             configure_ce_bgp(conf, network_conf)
             configure_ce_ospf(conf, network_conf)
+            configure_pe_bgp(conf, network_conf)
 
             with open('output.yaml', 'w') as output_file:
                 documents = yaml.dump(conf, output_file)

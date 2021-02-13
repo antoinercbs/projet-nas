@@ -1,6 +1,6 @@
 routers :
 
-# ------------- R1 ------------- #
+# ------------- R1 (CE1 Kelebulc)------------- #
 
   - global:
       hostname: "R1"
@@ -29,7 +29,7 @@ routers :
         mask: "255.255.255.0"
         no-shutdown: true
 
-# ------------- R2 ------------- #
+# ------------- R2 (CE1 Aperture) ------------- #
 
   - global:
       hostname: "R2"
@@ -37,7 +37,6 @@ routers :
       username: "antoine"
       password: "cisco"
       enable-password: "cisco"
-
 
     interfaces:
       - name: "g1/0"
@@ -58,7 +57,7 @@ routers :
       default-router: "172.16.1.254"
       dns-server: "172.16.1.254"
 
-# ------------- R3 ------------- #
+# ------------- R3 (CE2 Aperture) ------------- #
 
   - global:
       hostname: "R3"
@@ -86,7 +85,7 @@ routers :
       default-router: "172.16.2.254"
       dns-server: "172.16.2.254"
 
-# ------------- R4 ------------- #
+# ------------- R4 (CE2 Kelebulc) ------------- #
 
   - global:
       hostname: "R4"
@@ -114,7 +113,7 @@ routers :
         mask: "255.255.255.0"
         no-shutdown: true
 
-# ------------- R5 ------------- #
+# ------------- R5 (PE1)------------- #
 
   - global:
       hostname: "R5"
@@ -142,7 +141,7 @@ routers :
         mask: "255.255.255.0"
         no-shutdown: true
 
-# ------------- R6 ------------- #
+# ------------- R6 (PE2)------------- #
 
   - global:
       hostname: "R6"
@@ -169,7 +168,7 @@ routers :
         mask: "255.255.255.0"
         no-shutdown: true
 
-# ------------- R7 ------------- #
+# ------------- R7 (P) ------------- #
 
   - global:
       hostname: "R7"
