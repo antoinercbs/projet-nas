@@ -1,0 +1,191 @@
+routers:
+- dhcp:
+    default-router: 172.16.1.254
+    dns-server: 172.16.1.254
+    excluded-address-max: 172.16.1.50
+    excluded-address-min: 172.16.1.1
+    pool-name: KelebulcDHCP
+    subnet: 172.16.1.0
+    subnet-mask: 255.255.255.0
+  global:
+    enable-password: cisco
+    host: 192.168.122.11
+    hostname: R1
+    password: cisco
+    username: antoine
+  interfaces:
+  - address: 172.16.1.254
+    mask: 255.255.255.0
+    name: g1/0
+    no-shutdown: true
+  - address: 11.11.16.1
+    mask: 255.255.255.0
+    name: g2/0
+    no-shutdown: true
+- dhcp:
+    default-router: 172.16.1.254
+    dns-server: 172.16.1.254
+    excluded-address-max: 172.16.1.50
+    excluded-address-min: 172.16.1.1
+    pool-name: ApertureDHCP
+    subnet: 172.16.1.0
+    subnet-mask: 255.255.255.0
+  global:
+    enable-password: cisco
+    host: 192.168.122.12
+    hostname: R2
+    password: cisco
+    username: antoine
+  interfaces:
+  - address: 172.16.1.254
+    mask: 255.255.255.0
+    name: g1/0
+    no-shutdown: true
+  - address: 11.11.26.2
+    mask: 255.255.255.0
+    name: g2/0
+    no-shutdown: true
+- dhcp:
+    default-router: 172.16.2.254
+    dns-server: 172.16.2.254
+    excluded-address-max: 172.16.2.50
+    excluded-address-min: 172.16.2.1
+    pool-name: ApertureDHCP
+    subnet: 172.16.2.0
+    subnet-mask: 255.255.255.0
+  global:
+    enable-password: cisco
+    host: 192.168.122.13
+    hostname: R3
+    password: cisco
+    username: antoine
+  interfaces:
+  - address: 172.16.2.254
+    mask: 255.255.255.0
+    name: g1/0
+    no-shutdown: true
+  - address: 11.11.35.3
+    mask: 255.255.255.0
+    name: g2/0
+    no-shutdown: true
+- dhcp:
+    default-router: 172.16.2.254
+    dns-server: 172.16.2.254
+    excluded-address-max: 172.16.2.50
+    excluded-address-min: 172.16.2.1
+    pool-name: Kelebulc
+    subnet: 172.16.2.0
+    subnet-mask: 255.255.255.0
+  global:
+    enable-password: cisco
+    host: 192.168.122.14
+    hostname: R4
+    password: cisco
+    username: antoine
+  interfaces:
+  - address: 172.16.2.254
+    mask: 255.255.255.0
+    name: g1/0
+    no-shutdown: true
+  - address: 11.11.45.4
+    mask: 255.255.255.0
+    name: g2/0
+    no-shutdown: true
+- global:
+    enable-password: cisco
+    host: 192.168.122.15
+    hostname: R5
+    password: cisco
+    username: antoine
+  interfaces:
+  - address: 10.10.57.5
+    mask: 255.255.255.0
+    mpls-ip: true
+    name: g3/0
+    no-shutdown: true
+  - address: 11.11.45.5
+    mask: 255.255.255.0
+    name: g2/0
+    no-shutdown: true
+  - address: 11.11.35.5
+    mask: 255.255.255.0
+    name: g1/0
+    no-shutdown: true
+  loopbacks:
+  - address: 10.1.1.5
+    mask: 255.255.255.255
+    number: 0
+  ospf:
+  - networks:
+    - area: '0'
+      mask: 0.0.0.0
+      subnet: 10.1.1.5
+    - area: '0'
+      mask: 0.0.0.255
+      subnet: 10.10.57.0
+    process-number: '1'
+- global:
+    enable-password: cisco
+    host: 192.168.122.16
+    hostname: R6
+    password: cisco
+    username: antoine
+  interfaces:
+  - address: 10.10.67.6
+    mask: 255.255.255.0
+    mpls-ip: true
+    name: g3/0
+    no-shutdown: true
+  - address: 11.11.16.6
+    name: g2/0
+    no-shutdown: true
+  - address: 11.11.26.6
+    mask: 255.255.255.0
+    name: g1/0
+    no-shutdown: true
+  loopbacks:
+  - address: 10.1.1.6
+    mask: 255.255.255.255
+    number: 0
+  ospf:
+  - networks:
+    - area: '0'
+      mask: 0.0.0.0
+      subnet: 10.1.1.6
+    - area: '0'
+      mask: 0.0.0.255
+      subnet: 10.10.67.0
+    process-number: '1'
+- global:
+    enable-password: cisco
+    host: 192.168.122.17
+    hostname: R7
+    password: cisco
+    username: antoine
+  interfaces:
+  - address: 10.10.67.7
+    mask: 255.255.255.0
+    mpls-ip: true
+    name: g1/0
+    no-shutdown: true
+  - address: 10.10.57.7
+    mask: 255.255.255.0
+    mpls-ip: true
+    name: g2/0
+    no-shutdown: true
+  loopbacks:
+  - address: 10.1.1.7
+    mask: 255.255.255.255
+    number: 0
+  ospf:
+  - networks:
+    - area: '0'
+      mask: 0.0.0.0
+      subnet: 10.1.1.7
+    - area: '0'
+      mask: 0.0.0.255
+      subnet: 10.10.67.0
+    - area: '0'
+      mask: 0.0.0.255
+      subnet: 10.10.57.0
+    process-number: '1'

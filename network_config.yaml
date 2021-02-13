@@ -1,0 +1,76 @@
+backbone-ospf:
+  use-mpls: true
+  ospf-on-loopback: true
+  routers:
+    - name: "R7"
+      backbone-neighbors:
+        - subnet-mask: "255.255.0.0"
+          interface: "g1/0"
+        - subnet-mask: "255.255.0.0"
+          interface: "g2/0"
+    - name: "R6"
+      backbone-neighbors:
+        - subnet-mask: "255.255.0.0"
+          interface: "g3/0"
+    - name: "R5"
+      backbone-neighbors:
+        - subnet-mask: "255.255.0.0"
+          interface: "g3/0"
+
+ibgp:
+  as-number: "64100"
+  activate-vpn: true
+  edge-routers:
+    - name: "R5"
+    - name: "R6"
+
+vpn: 
+  - vrf-name: "Aperture"
+    sites:
+      - ce-router:
+          name: "R2"
+          as-number: "64102"
+          interface-to-pe: "g2/0"
+          local-subnets:
+            - address: "172.16.1.0"
+              mask: "255.255.255.0"
+        pe-router:
+          name: "R6"
+          interface-to-ce: "g1/0"
+      - ce-router:
+          name: "R3"
+          as-number: "64103"
+          interface-to-pe: "g2/0"
+          local-subnets:
+            - address: "172.16.2.0"
+              mask: "255.255.255.0"
+        pe-router:
+          name: "R5"
+          interface-to-ce: "g1/0"
+
+  - vrf-name: "Kelebulc"
+    sites:
+      - ce-router:
+          name: "R1"
+          as-number: "64101"
+          interface-to-pe: "g2/0"
+          local-subnets:
+            - address: "172.16.1.0"
+              mask: "255.255.255.0"
+        pe-router:
+          name: "R6"
+          interface-to-ce: "g2/0"
+      - ce-router:
+          name: "R4"
+          as-number: "64104"
+          interface-to-pe: "g2/0"
+          local-subnets:
+            - address: "172.16.2.0"
+              mask: "255.255.255.0"
+        pe-router:
+          name: "R5"
+          interface-to-ce: "g2/0"
+
+        
+
+
