@@ -87,8 +87,8 @@ def configure_vrf(conf, network_conf):
                         router["vrf"] = []
                     vrf_conf = dict()
                     vrf_conf["name"] = vpn["vrf-name"]
-                    vrf_conf["rd"] = rd
-                    vrf_conf["as_number"] = network_conf["ibgp"]["as-number"]
+                    vrf_conf["rd"] = str(rd)
+                    vrf_conf["as-number"] = network_conf["ibgp"]["as-number"]
                     router["vrf"].append(vrf_conf)
         rd += 1
 
@@ -116,6 +116,7 @@ def configure_ce_bgp(conf, network_conf):
                             for pe_inter in pe_router["interfaces"]:
                                 if pe_inter["name"] == site["pe-router"]["interface-to-ce"]:
                                     nei_conf["address"] = pe_inter["address"]
+                                    pe_inter["vrf-forwarding"] = vpn["vrf-name"]
                             router["bgp"]["neighbors"].append(nei_conf)
 
 def configure_ce_ospf(conf, network_conf):
@@ -133,14 +134,14 @@ def configure_ce_ospf(conf, network_conf):
                             if inter["name"] == inter_conf["name"]:
                                 net_conf = dict()
                                 net_conf["area"] = "0"
-                                net_conf["address"] = apply_mask(inter_conf["address"], inter_conf["mask"])
+                                net_conf["subnet"] = apply_mask(inter_conf["address"], inter_conf["mask"])
                                 net_conf["mask"] = invert_ip(inter_conf["mask"])
                                 ospf_conf["networks"].append(net_conf)
                     for inter_conf in router["interfaces"]:
                         if site["ce-router"]["interface-to-pe"] == inter_conf["name"]:
                             net_conf = dict()
                             net_conf["area"] = "0"
-                            net_conf["address"] = apply_mask(inter_conf["address"], inter_conf["mask"])
+                            net_conf["subnet"] = apply_mask(inter_conf["address"], inter_conf["mask"])
                             net_conf["mask"] = invert_ip(inter_conf["mask"])
                             ospf_conf["networks"].append(net_conf)
                     router["ospf"].append(ospf_conf)
@@ -165,8 +166,27 @@ def configure_pe_bgp(conf, network_conf):
                                     af_conf["neighbors"].append(net_conf)
                             router["bgp"]["address-families"].append(af_conf)
 
-
-
+def configure_pe_ospf(conf, network_conf):
+    vpn_conf = network_conf["vpn"]
+    for router in conf["routers"]:
+        process_number = 2
+        for vpn in vpn_conf:
+            for site in vpn["sites"]:
+                if router["global"]["hostname"] == site["pe-router"]["name"]:
+                    ospf_conf = dict()
+                    ospf_conf["process-number"] = str(process_number)
+                    ospf_conf["vrf"] = vpn["vrf-name"]
+                    ospf_conf["redistribute-bgp-subnets"] = network_conf["ibgp"]["as-number"]
+                    ospf_conf["networks"] = []
+                    for inter_conf in router["interfaces"]:
+                        if site["pe-router"]["interface-to-ce"] == inter_conf["name"]:
+                            net_conf = dict()
+                            net_conf["area"] = "0"
+                            net_conf["subnet"] = apply_mask(inter_conf["address"], inter_conf["mask"])
+                            net_conf["mask"] = invert_ip(inter_conf["mask"])
+                            ospf_conf["networks"].append(net_conf)
+                    router["ospf"].append(ospf_conf)
+            process_number += 1
 
 
 
@@ -179,7 +199,7 @@ def configure_pe_bgp(conf, network_conf):
 
 if __name__ == "__main__":
     with open('network_config.yaml') as network_conf_file:
-        with open('startup_config.yaml') as startup_conf_file:
+        with open('routers_config.yaml') as startup_conf_file:
             network_conf = yaml.full_load(network_conf_file)
             conf = yaml.full_load(startup_conf_file)
 
@@ -189,8 +209,9 @@ if __name__ == "__main__":
             configure_ce_bgp(conf, network_conf)
             configure_ce_ospf(conf, network_conf)
             configure_pe_bgp(conf, network_conf)
+            configure_pe_ospf(conf, network_conf)
 
-            with open('output.yaml', 'w') as output_file:
+            with open('output_config.yaml', 'w') as output_file:
                 documents = yaml.dump(conf, output_file)
             
 

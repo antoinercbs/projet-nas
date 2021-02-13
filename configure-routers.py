@@ -41,10 +41,10 @@ def configure_ospf(tn, conf):
     num = conf["process-number"]
     if ("vrf" in conf.keys()):
         vrf = conf["vrf"]
-        tn.write(b"no router ospf " + num.encode('ascii') + b" vrf "+ vrf.encode('ascii') +b"\n")
+        #tn.write(b"no router ospf " + num.encode('ascii') + b" vrf "+ vrf.encode('ascii') +b"\n")
         tn.write(b"router ospf " + num.encode('ascii') + b" vrf "+ vrf.encode('ascii') + b"\n")
     else:
-        tn.write(b"no router ospf " + num.encode('ascii') + b"\n")
+        #tn.write(b"no router ospf " + num.encode('ascii') + b"\n")
         tn.write(b"router ospf " + num.encode('ascii') + b"\n")
     if ("redistribute-bgp-subnets" in conf.keys()):
         tn.write(b"redistribute bgp " + conf["redistribute-bgp-subnets"].encode('ascii') + b" subnets" + b"\n")
@@ -69,7 +69,7 @@ def configure_vrf(tn, conf):
 def configure_bgp(tn, conf):
     as_number = conf["as-number"].encode('ascii')
     tn.write(b"conf t\n")
-    tn.write(b"no router bgp "+ as_number +b"\n")
+    #tn.write(b"no router bgp "+ as_number +b"\n")
     tn.write(b"router bgp "+ as_number +b"\n")
     if ("neighbors" in conf.keys()):
         for nei in conf["neighbors"]:
@@ -159,11 +159,11 @@ def configure_dhcp(tn, conf):
 
 
 if __name__ == "__main__":
-    with open('config.yaml') as cf:
+    with open('output_config.yaml') as cf:
         conf_file = yaml.full_load(cf)
 
         for conf in conf_file["routers"]:
-            print("Configuration of", conf["global"]["hostname"])
+            print("<--- Configuration of", conf["global"]["hostname"], "--->")
             tn = connect_to_host(conf["global"])
             
             if ("vrf" in conf.keys()):
