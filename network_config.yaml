@@ -4,18 +4,14 @@ backbone-ospf:
   routers:
     - name: "R7"
       backbone-neighbors:
-        - subnet-mask: "255.255.0.0"
-          interface: "g1/0"
-        - subnet-mask: "255.255.0.0"
-          interface: "g2/0"
+        - interface: "g1/0"
+        - interface: "g2/0"
     - name: "R6"
       backbone-neighbors:
-        - subnet-mask: "255.255.0.0"
-          interface: "g3/0"
+        - interface: "g3/0"
     - name: "R5"
       backbone-neighbors:
-        - subnet-mask: "255.255.0.0"
-          interface: "g3/0"
+        - interface: "g3/0"
 
 ibgp:
   as-number: "64100"

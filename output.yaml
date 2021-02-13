@@ -91,7 +91,18 @@ routers:
     mask: 255.255.255.0
     name: g2/0
     no-shutdown: true
-- global:
+- bgp:
+    address-families:
+    - family: vpnv4
+      neighbors:
+      - activate: true
+        address: 10.1.1.6
+    as-number: '64100'
+    neighbors:
+    - address: 10.1.1.6
+      remote-as: '64100'
+      update-source: lo0
+  global:
     enable-password: cisco
     host: 192.168.122.15
     hostname: R5
@@ -124,7 +135,18 @@ routers:
       mask: 0.0.0.255
       subnet: 10.10.57.0
     process-number: '1'
-- global:
+- bgp:
+    address-families:
+    - family: vpnv4
+      neighbors:
+      - activate: true
+        address: 10.1.1.5
+    as-number: '64100'
+    neighbors:
+    - address: 10.1.1.5
+      remote-as: '64100'
+      update-source: lo0
+  global:
     enable-password: cisco
     host: 192.168.122.16
     hostname: R6
