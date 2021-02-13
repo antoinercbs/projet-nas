@@ -10,7 +10,7 @@
 # login local 
 # transport input all
 # int <interface e.g. g1/0>
-# ip address dhcp 
+# ip address <ip>
 # no shut
 # end 
 # sh ip int brief

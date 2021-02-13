@@ -188,15 +188,6 @@ def configure_pe_ospf(conf, network_conf):
                     router["ospf"].append(ospf_conf)
             process_number += 1
 
-
-
-
-
-
-
-
-
-
 if __name__ == "__main__":
     with open('network_config.yaml') as network_conf_file:
         with open('routers_config.yaml') as startup_conf_file:
